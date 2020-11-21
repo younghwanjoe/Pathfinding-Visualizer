@@ -1,0 +1,19 @@
+#topbar {
+    width: 100%;
+    height: 100px;
+    margin-bottom: 20px;
+    background-color: #47fff0;
+
+    display: flex;
+    .title {
+        @import url('https://fonts.googleapis.com/css2?family=Goldman:wght@700&display=swap');
+        font-family: 'Goldman', cursive;
+        flex: flex;
+        flex-direction: column;
+        align-self: center;
+        font-size: 40px;
+        margin-left: 20px;
+        font-weight: bold;
+        font-style: italic;
+    }
+}

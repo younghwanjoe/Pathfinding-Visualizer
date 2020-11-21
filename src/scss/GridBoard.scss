@@ -1,0 +1,47 @@
+  :root {
+    --box-transition-delay: 0.2s;
+    --box-transition-function: linear;
+  }
+  .grid-board {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 0 auto;
+  
+  }
+  .row {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .box {
+    display: flex;
+    width: 25px;
+    height: 25px;
+    border: 0.001em solid #57dbff;
+    -webkit-transition: background-color var(--box-transition-delay) var(--box-transition-function);
+    -moz-transition: background-color var(--box-transition-delay)  var(--box-transition-function);
+    -o-transition: background-color var(--box-transition-delay)  var(--box-transition-function);
+    transition: background-color var(--box-transition-delay)  var(--box-transition-function);
+    border-right: none;
+    border-bottom: none;
+  }
+  .box:last-child {
+    border-right: 0.001em solid #57dbff;
+  }
+  .row:last-child {
+    .box{
+      border-bottom: 0.001em solid #57dbff;
+    }
+  }
+  .board-body{
+    width: 100%;
+  }
+  
+  .box.wall {
+    background: #ff80f2;
+    // background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(16,255,100,1) 100%);
+  }
+  .box.hover {
+    background-color: #57dbff;
+  }
