@@ -6,8 +6,6 @@
     display: flex;
     flex-wrap: wrap;
     width: 100%;
-    margin: 0 auto;
-  
   }
   .row {
     width: 100%;
@@ -15,6 +13,7 @@
     justify-content: center;
   }
   .box {
+    padding: 1px;
     display: flex;
     width: 25px;
     height: 25px;
@@ -33,6 +32,9 @@
     .box{
       border-bottom: 0.001em solid #57dbff;
     }
+    .wall {
+      border-bottom: 0.001em solid #ff80f2;
+    }
   }
   .board-body{
     width: 100%;
@@ -42,6 +44,15 @@
     background: #ff80f2;
     // background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(16,255,100,1) 100%);
   }
+  .box.start-point {
+    background: red;
+  }
+  .box.end-point {
+    background: yellow;
+  }
   .box.hover {
     background-color: #57dbff;
+  }
+  .box.wall.hover {
+    background-color: #86ff57;
   }
