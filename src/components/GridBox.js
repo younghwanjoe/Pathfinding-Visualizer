@@ -1,19 +1,35 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 const GridBox = (props) => {
-    const { x, y } = props;
+    const { x, y, visited, wall, cost } = props;
     const boxPoint = `${y}-${x}`
-
-    const [boxType, setBoxType] = useState('blank');
+    useEffect(() => {
+        if (wall) {
+            setBoxClass('box wall')
+        } else {
+            setBoxClass('box')
+        }
+    },[wall])
     const [boxClass, setBoxClass] = useState('box');
+
+    const { boardCoordinate } = useSelector(({ boardCoordinate }) => ({
+        boardCoordinate: boardCoordinate
+    }));
+
+    const dispatch = useDispatch();
+    const updateBoxType = useCallback(payload => {
+        dispatch({
+            type: "gridBoard/updateBoxType",
+            payload: payload
+        })
+    }, [dispatch]);
 
     const { startPoint, endPoint } = useSelector(state => ({
         startPoint: state.startPoint,
         endPoint: state.endPoint
     }))
 
-    const dispatch = useDispatch();
     const dispatchStartPoint = useCallback(payload => {
         dispatch({
             type: "gridBox/setStartPoint",
@@ -28,17 +44,7 @@ const GridBox = (props) => {
     }, [dispatch]);
 
     const clickBox = () => {
-        if(boxPoint === startPoint){
-            dispatchStartPoint(false);
-        } else if(boxPoint === endPoint) {
-            dispatchEndPoint(false);
-        }
 
-        const newType = boxType === "blank" ? "wall" : "blank";
-        setBoxType(newType);
-
-        const newClass = boxClass.includes("wall") ? "box" : "box wall";
-        setBoxClass(newClass);
     }
     const mouseEnter = () => {
         setBoxClass(boxClass + " hover");
@@ -48,20 +54,40 @@ const GridBox = (props) => {
     }
     const rightMouseClick = (e) => {
         e.preventDefault();
-        console.log(startPoint,endPoint);
-        if(!startPoint){
-            dispatchStartPoint(boxPoint);
-            setBoxClass("box start-point");
-        }else if(startPoint && !endPoint){
-            dispatchEndPoint(boxPoint);
-            setBoxClass("box end-point");
+        dispatchStartPoint(boxPoint);
+        setBoxClass("box start-point");
+
+    }
+
+    const onClick = (e) => {
+        e.preventDefault();
+        if (boxPoint === startPoint) {
+            dispatchStartPoint(false);
+        } else if (boxPoint === endPoint) {
+            dispatchEndPoint(false);
         }
+
+        updateBoxType({ point: boxPoint, wall: !boardCoordinate[boxPoint]['wall'] })
+
+    }
+    const onDragStart = (e) => {
+        e.preventDefault();
+        console.log(boxPoint)
+        if (boxPoint === startPoint) {
+            dispatchStartPoint(false);
+        } else if (boxPoint === endPoint) {
+            dispatchEndPoint(false);
+        }
+
+        const newClass = boxClass.includes("wall") ? "box" : "box wall";
+        setBoxClass(newClass);
     }
 
     return <div id={`column ${boxPoint}`}
         className={boxClass}
-        onClick={clickBox}
         onContextMenu={rightMouseClick}
+        onClick={onClick}
+        onDragEnter={onClick}
         onMouseEnter={mouseEnter}
         onMouseLeave={mouseLeave}
     ></div>
