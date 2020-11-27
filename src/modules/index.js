@@ -1,13 +1,10 @@
-import { combineReducers } from 'redux';
-import { useStore } from 'react-redux';
-
-const countAxisX = 50;
-const countAxisY = 25;
+const countAxisX = 30;
+const countAxisY = 30;
 
 // initializing boardCoordinate
 const boardCoordinate = {};
-[...Array(countAxisX).keys()].forEach(y => {
-    [...Array(countAxisY).keys()].forEach(x => {
+[...Array(countAxisY).keys()].forEach(y => {
+    [...Array(countAxisX).keys()].forEach(x => {
         boardCoordinate[`${y}-${x}`] = {}
         boardCoordinate[`${y}-${x}`]['x'] = x
         boardCoordinate[`${y}-${x}`]['y'] = y
@@ -21,23 +18,15 @@ const initialState = {
     clickType : 'wall',
     boardCoordinate: boardCoordinate,
     startPoint: '0-0',
-    endPoint: '10-10',
-    countAxisX: countAxisX,
-    countAxisY: countAxisY,
+    endPoint: '20-20',
+    countAxisX: 50,
+    countAxisY: 25,
     toVisitPoints: ['0-0'],
     currentSearchPoints: [],
-    currentVisitedPoints: []
+    toVisitPoints: []
 }
 
-const setStartPointAction = (payload)=> ({
-    type: 'gridBox/setStartPoint',
-    payload: payload
-});
 
-const setEndPointAction = (payload) => ({
-    type: 'gridBox/setEndPoint',
-    payload: payload
-})
 
 const reducer = (state =  initialState, action) => {
     switch(action.type) {
@@ -54,7 +43,6 @@ const reducer = (state =  initialState, action) => {
             }
         }
         case 'gridBoard/updateBoxType' : {
-            
             return {
                 ...state,
                 boardCoordinate:  {
@@ -64,6 +52,12 @@ const reducer = (state =  initialState, action) => {
                         wall: action.payload.wall  
                     }
                 }
+            }
+        }
+        case 'gridBoard/updateToVisitPoints' : {
+            return {
+                ...state,
+                toVisitPoints: action.payload
             }
         }
         default:

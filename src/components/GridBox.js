@@ -3,14 +3,25 @@ import { useSelector, useDispatch } from 'react-redux';
 
 const GridBox = (props) => {
     const { x, y, visited, wall, cost } = props;
+    const { startPoint, endPoint } = useSelector(({ startPoint, endPoint })=>({
+        startPoint: startPoint,
+        endPoint: endPoint
+    }))
     const boxPoint = `${y}-${x}`
     useEffect(() => {
         if (wall) {
             setBoxClass('box wall')
-        } else {
+        } 
+        else if(boxPoint == startPoint) {
+            setBoxClass('box start-point')
+        }
+        else if(boxPoint == endPoint) {
+            setBoxClass('box end-point')
+        }
+        else {
             setBoxClass('box')
         }
-    },[wall])
+    },[wall, startPoint, endPoint])
     const [boxClass, setBoxClass] = useState('box');
 
     const { boardCoordinate } = useSelector(({ boardCoordinate }) => ({
@@ -25,11 +36,6 @@ const GridBox = (props) => {
         })
     }, [dispatch]);
 
-    const { startPoint, endPoint } = useSelector(state => ({
-        startPoint: state.startPoint,
-        endPoint: state.endPoint
-    }))
-
     const dispatchStartPoint = useCallback(payload => {
         dispatch({
             type: "gridBox/setStartPoint",
@@ -43,9 +49,6 @@ const GridBox = (props) => {
         })
     }, [dispatch]);
 
-    const clickBox = () => {
-
-    }
     const mouseEnter = () => {
         setBoxClass(boxClass + " hover");
     }
