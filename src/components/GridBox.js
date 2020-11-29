@@ -2,26 +2,29 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 const GridBox = (props) => {
-    const { x, y, visited, wall, cost } = props;
+    const { x, y, pointType, visited, wall } = props;
     const { startPoint, endPoint } = useSelector(({ startPoint, endPoint })=>({
         startPoint: startPoint,
         endPoint: endPoint
     }))
     const boxPoint = `${y}-${x}`
     useEffect(() => {
-        if (wall) {
+        if(pointType === 'path'){
+            setBoxClass('box path')
+        } else if(pointType === 'unvisited'){
+            setBoxClass('box')
+        } else if(pointType === 'visited'){
+            setBoxClass('box visited')
+        } else if(pointType === 'wall'){
             setBoxClass('box wall')
         } 
-        else if(boxPoint == startPoint) {
+
+        if(boxPoint === startPoint) {
             setBoxClass('box start-point')
-        }
-        else if(boxPoint == endPoint) {
+        } else if(boxPoint === endPoint) {
             setBoxClass('box end-point')
         }
-        else {
-            setBoxClass('box')
-        }
-    },[wall, startPoint, endPoint])
+    },[startPoint, endPoint, boxPoint, pointType, wall,  visited])
     const [boxClass, setBoxClass] = useState('box');
 
     const { boardCoordinate } = useSelector(({ boardCoordinate }) => ({
@@ -29,12 +32,11 @@ const GridBox = (props) => {
     }));
 
     const dispatch = useDispatch();
-    const updateBoxType = useCallback(payload => {
-        dispatch({
-            type: "gridBoard/updateBoxType",
-            payload: payload
-        })
-    }, [dispatch]);
+
+    const updateBox = useCallback(payload => dispatch({
+        type: 'controller/updateBox',
+        payload: payload
+    }),[dispatch])
 
     const dispatchStartPoint = useCallback(payload => {
         dispatch({
@@ -42,6 +44,7 @@ const GridBox = (props) => {
             payload: payload
         })
     }, [dispatch]);
+    
     const dispatchEndPoint = useCallback(payload => {
         dispatch({
             type: "gridBox/setEndPoint",
@@ -57,20 +60,21 @@ const GridBox = (props) => {
     }
     const rightMouseClick = (e) => {
         e.preventDefault();
-        dispatchStartPoint(boxPoint);
-        setBoxClass("box start-point");
-
+        // dispatchStartPoint(boxPoint);
+        // setBoxClass("box start-point");
     }
 
     const onClick = (e) => {
         e.preventDefault();
-        if (boxPoint === startPoint) {
-            dispatchStartPoint(false);
-        } else if (boxPoint === endPoint) {
-            dispatchEndPoint(false);
-        }
-
-        updateBoxType({ point: boxPoint, wall: !boardCoordinate[boxPoint]['wall'] })
+        // if (boxPoint === startPoint) {
+        //     dispatchStartPoint(false);
+        // } else if (boxPoint === endPoint) {
+        //     dispatchEndPoint(false);
+        // }
+        updateBox({ 
+            point: boxPoint, 
+            pointType: boardCoordinate[boxPoint]['pointType'] === 'wall' ? 'unvisited' : 'wall'
+        })
 
     }
     const onDragStart = (e) => {

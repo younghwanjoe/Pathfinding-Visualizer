@@ -45,7 +45,7 @@
     // background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(16,255,100,1) 100%);
   }
   .box.start-point {
-    background: red;
+    background: rgb(4, 0, 255);
   }
   .box.end-point {
     background: yellow;
@@ -55,4 +55,10 @@
   }
   .box.wall.hover {
     background-color: #80B3FF;
+  }
+  .box.visited {
+    background: rgb(152, 255, 55);
+  }
+  .box.path {
+    background: rgb(255, 55, 55);
   }
