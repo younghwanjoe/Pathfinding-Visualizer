@@ -16,7 +16,8 @@ const boardCoordinate = {};
             visited: false,
             cost: 1,
             shortest: Infinity, //shortest cost from startPoint
-            prev: null //previous vertex
+            prev: null, //previous vertex
+            order: null
         }
     })
 })
@@ -77,10 +78,13 @@ const reducer = (state = initialState, action) => {
                     const visitedPoints = [];
                     const { startPoint, endPoint } = state;
                     const boardCoordinateCopy = cloneDeep(state.boardCoordinate)
+                    let orderCount = 0;
                     boardCoordinateCopy[startPoint] = {
                         ...boardCoordinateCopy[startPoint],
-                        shortest: 0
+                        shortest: 0,
+                        order: orderCount
                     }
+                    orderCount =+ 1;
                     let unvisitedPoints = Object.values(boardCoordinateCopy).filter(el => {
                         return el.pointType === 'unvisited' && el.shortest !== Infinity
                     })
@@ -101,6 +105,8 @@ const reducer = (state = initialState, action) => {
                             }
                             else {
                                 boardCoordinateCopy[currentPoint.index].pointType = 'visited';
+                                boardCoordinateCopy[currentPoint.index].order = orderCount;
+                                orderCount += 1;
                                 visitedPoints.push(currentPoint);
                                 const x = currentPoint.x
                                 const y = currentPoint.y
@@ -131,7 +137,9 @@ const reducer = (state = initialState, action) => {
                             lastPoint = boardCoordinateCopy[lastPoint].prev
                             if (lastPoint !== null) {
                                 shortestPath.push(lastPoint)
-                                boardCoordinateCopy[lastPoint].pointType = "path"
+                                boardCoordinateCopy[lastPoint].pointType = "path";
+                                // boardCoordinateCopy[lastPoint].order = orderCount;
+                                orderCount += 1;
                             }
                         } else {
                             lastPoint = null
@@ -140,11 +148,10 @@ const reducer = (state = initialState, action) => {
                     shortestPath.reverse()
                     return {
                         ...state,
+                        boardCoordinate: boardCoordinateCopy,
                         visitedPoints: visitedPoints,
                         shortestPath: shortestPath
                     }
-                    console.log('visited path', visitedPoints)
-                    console.log('shortest path', shortestPath)
                 }
                 default:
                     return state;

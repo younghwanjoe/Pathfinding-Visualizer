@@ -24,6 +24,9 @@
     transition: background-color var(--box-transition-delay)  var(--box-transition-function);
     border-right: none;
     border-bottom: none;
+    &:hover {
+      background-color: #57dbff;
+    }
   }
   .box:last-child {
     border-right: 0.001em solid #57dbff;
@@ -50,14 +53,11 @@
   .box.end-point {
     background: yellow;
   }
-  .box.hover {
-    background-color: #57dbff;
-  }
+  
   .box.wall.hover {
     background-color: #80B3FF;
   }
   .box.visited {
-    background: rgb(63,94,251);
     animation-name: visitedAnimation;
     animation-duration: 1s;
     animation-timing-function: ease-out;
@@ -90,6 +90,30 @@
     background-color: rgb(40, 247, 219);
   }
 }
-  .box.path {
-    background: rgb(255, 55, 55);
-  }
+// .box.path {
+//   animation: pathAnimation;
+//   animation-duration: 1s;
+//   animation-timing-function: ease-out;
+// }
+
+// @keyframes pathAnimation {
+//   0% {
+//     transform: scale(.3);
+//     background-color: rgb(209, 224, 75);
+//     border-radius: 100%;
+//   }
+
+//   50% {
+//     background-color: rgba(197, 217, 17, 0.75);
+//   }
+
+//   75% {
+//     transform: scale(1.2);
+//     background-color: rgba(236, 252, 18, 0.959)
+//   }
+
+//   100% {
+//     transform: scale(1.0);
+//     background-color: rgb(239, 243, 14);
+//   }
+// }

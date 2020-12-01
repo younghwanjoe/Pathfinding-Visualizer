@@ -3,21 +3,34 @@ import { useSelector } from 'react-redux';
 
 const GridBoard = () => {
 
-    const { countAxisX, countAxisY } = useSelector( ({ countAxisX, countAxisY }) => ({
-        countAxisX: countAxisX,
-        countAxisY: countAxisY
-    }))
-
-
-    const { boardCoordinate } = useSelector( ({boardCoordinate }) => ({
-        boardCoordinate: boardCoordinate
+    const { countAxisX, countAxisY, boardCoordinate, startPoint, endPoint } = useSelector( ({ countAxisX, countAxisY,boardCoordinate, startPoint, endPoint }) => ({
+        countAxisX, countAxisY, boardCoordinate, startPoint, endPoint
     }))
 
     const gridList =  Object.keys(boardCoordinate).map(point => {
         
-        const {x, y, pointType, visited, wall, cost} = boardCoordinate[point];
-        const key = `${y}-${x}`;
-        const gridBox = <GridBox x={x} y={y} pointType={pointType} visited={visited} wall={wall} cost={cost} key={key}></GridBox>
+        const {x, y, pointType, visited, wall, cost, order} = boardCoordinate[point];
+        const boxPoint = `${y}-${x}`;
+        let boxClass = ""
+        const boxStyle= {
+            'animationDelay': order === null ? 0 : `${order*0.02}s`
+        };
+        if(pointType === 'path'){
+           boxClass = 'box visited path'
+        } else if(pointType === 'unvisited'){
+           boxClass = 'box'
+        } else if(pointType === 'visited'){
+           boxClass = 'box visited'
+        } else if(pointType === 'wall'){
+           boxClass = 'box wall'
+        } 
+
+        if(boxPoint === startPoint) {
+           boxClass = 'box start-point'
+        } else if(boxPoint === endPoint) {
+           boxClass = 'box end-point'
+        }
+        const gridBox = <GridBox boxClass={boxClass} boxStyle={boxStyle} x={x} y={y} pointType={pointType} visited={visited} wall={wall} cost={cost} order={order} key={boxPoint}></GridBox>
         return gridBox
     })
     

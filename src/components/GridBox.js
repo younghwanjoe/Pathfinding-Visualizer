@@ -2,35 +2,15 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 const GridBox = (props) => {
-    const { x, y, pointType, visited, wall } = props;
+    const { x, y, pointType, visited, wall, order, boxClass, boxStyle } = props;
     const { startPoint, endPoint } = useSelector(({ startPoint, endPoint })=>({
         startPoint: startPoint,
         endPoint: endPoint
     }))
     const boxPoint = `${y}-${x}`
-    useEffect(() => {
-        if(pointType === 'path'){
-            setBoxClass('box path')
-        } else if(pointType === 'unvisited'){
-            setBoxClass('box')
-        } else if(pointType === 'visited'){
-            setBoxClass('box visited')
-        } else if(pointType === 'wall'){
-            setBoxClass('box wall')
-        } 
-
-        if(boxPoint === startPoint) {
-            setBoxClass('box start-point')
-        } else if(boxPoint === endPoint) {
-            setBoxClass('box end-point')
-        }
-    },[startPoint, endPoint, boxPoint, pointType, wall,  visited])
-    const [boxClass, setBoxClass] = useState('box');
-
     const { boardCoordinate } = useSelector(({ boardCoordinate }) => ({
         boardCoordinate: boardCoordinate
     }));
-
     const dispatch = useDispatch();
 
     const updateBox = useCallback(payload => dispatch({
@@ -52,15 +32,9 @@ const GridBox = (props) => {
         })
     }, [dispatch]);
 
-    const mouseEnter = () => {
-        setBoxClass(boxClass + " hover");
-    }
-    const mouseLeave = () => {
-        setBoxClass(boxClass.replace(" hover", ""));
-    }
     const rightMouseClick = (e) => {
         e.preventDefault();
-        // dispatchStartPoint(boxPoint);
+        dispatchStartPoint(boxPoint);
         // setBoxClass("box start-point");
     }
 
@@ -77,9 +51,15 @@ const GridBox = (props) => {
         })
 
     }
-    const onDragStart = (e) => {
+
+    const onDrag = (e) => {
         e.preventDefault();
         console.log(boxPoint)
+        boxClass = "box wall";
+    }
+
+    const onDragStart = (e) => {
+        e.preventDefault();
         if (boxPoint === startPoint) {
             dispatchStartPoint(false);
         } else if (boxPoint === endPoint) {
@@ -87,16 +67,16 @@ const GridBox = (props) => {
         }
 
         const newClass = boxClass.includes("wall") ? "box" : "box wall";
-        setBoxClass(newClass);
+        // setBoxClass(newClass);
     }
 
     return <div id={`column ${boxPoint}`}
         className={boxClass}
+        style={boxStyle}
         onContextMenu={rightMouseClick}
         onClick={onClick}
-        onDragEnter={onClick}
-        onMouseEnter={mouseEnter}
-        onMouseLeave={mouseLeave}
+        onDragEnter={onDrag}
+        onDrag={onDrag}
     ></div>
 }
 

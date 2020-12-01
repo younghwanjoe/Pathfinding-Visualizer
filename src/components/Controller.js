@@ -1,17 +1,17 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, useStore } from 'react-redux';
 
 const StartButton = ({ startButtonClick, restartButtonClick, trigger }) => {
-    if(trigger){
-        return (
-            <div className="button-wrap">
-                <button
-                    className="button start"
-                    onClick={restartButtonClick}
-                >PAUSE</button>
-            </div>
-        )
-    }else {
+    // if(trigger){
+    //     return (
+    //         <div className="button-wrap">
+    //             <button
+    //                 className="button start"
+    //                 onClick={restartButtonClick}
+    //             >PAUSE</button>
+    //         </div>
+    //     )
+    // }else {
         return (
             <div className="button-wrap">
                 <button
@@ -20,7 +20,7 @@ const StartButton = ({ startButtonClick, restartButtonClick, trigger }) => {
                 >START</button>
             </div>
         )
-    }
+    // }
 }
 
 const ResetButton = ({ onClick }) => {
@@ -45,52 +45,11 @@ const Controller = () => {
     const [elapsedTime, setElapsedTime] = useState("00:00:00")
     const [moveCount, setMoveCount] = useState(0);
 
-    const { visitedPoints, shortestPath } = useSelector(({ visitedPoints, shortestPath }) => ({
-        visitedPoints: visitedPoints,
-        shortestPath: shortestPath
-    }))
-
-    const savedCallback = useRef();
-
-    function callback() {
-        if(visitedPoints[pathCount] != undefined){
-            updateBox({
-                point: visitedPoints[pathCount].index,
-                pointType: 'visited'
-            })
-            setMoveCount(moveCount + 1)
-            setPathCount(pathCount + 1)
-        }else{ 
-            updateBox({
-                point: shortestPath[shortestPathCount],
-                pointType: 'path'
-            })
-            setShortestPathCount(shortestPathCount + 1)
-        }
-    }
-
-    useEffect(() => {
-        savedCallback.current = callback
-    });
-    
-    useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if(trigger) {
-            let id = setInterval(tick, 3);
-            return () => {
-                clearInterval(id)
-            };
-        }
-    },[trigger])
-
+    const store = useStore();
     const startButtonClick = () => {
-        if(shortestPath.length === 0){
-            updateShortestPath({
-                algorithm: 'Daijkstra'
-            })
-        }
+        updateShortestPath({
+            algorithm: 'Daijkstra'
+        })
         setTrigger(true)
     }
 
@@ -144,14 +103,14 @@ const Controller = () => {
                 restartButtonClick={restartButtonClick}
                 trigger={trigger}/>
                 <ResetButton onClick={resetButtonClick} />
-                <div className="counter">
-                    {/* <div className="counter-box">
+                {/* <div className="counter">
+                    <div className="counter-box">
                         <p className="elapsed-time">{elapsedTime}</p>
-                    </div> */}
+                    </div>
                     <div className="counter-box">
                         <p className="move-counter">{moveCount}</p>
                     </div>
-                </div>
+                </div> */}
             </div>
         </section>
     )
