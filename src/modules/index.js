@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash/fp/cloneDeep';
 
 const countAxisX = 50;
-const countAxisY = 30;
+const countAxisY = 20;
 
 // initializing boardCoordinate
 const boardCoordinate = {};
@@ -25,8 +25,8 @@ const initialState = {
     boardCoordinate: boardCoordinate,
     startPoint: '5-5',
     endPoint: '10-10',
-    countAxisX: 50,
-    countAxisY: 25,
+    countAxisX: countAxisX,
+    countAxisY: countAxisY,
     currentSearchPoints: [],
     algorithm: 'dijkstra',
     visitedPoints: [],

@@ -97,6 +97,7 @@ const GridBox = (props) => {
         onDragEnter={onClick}
         onMouseEnter={mouseEnter}
         onMouseLeave={mouseLeave}
+        draggable={true}
     ></div>
 }
 
