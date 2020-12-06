@@ -1,3 +1,4 @@
+import React from 'react';
 import GridBox from './GridBox';
 import { useSelector } from 'react-redux';
 

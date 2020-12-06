@@ -1,3 +1,4 @@
+import React from 'react';
 import TopBar from './components/TopBar';
 import GridBoard from './components/GridBoard';
 import Controller from './components/Controller';
