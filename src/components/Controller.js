@@ -37,8 +37,8 @@ const AlgorithmDropBox = ({ onChange }) => {
     return (
         <div className="button-wrap">
             <form>
-                <label htmlFor="algorithm">algorithm:</label>
-                <select name="algorithm" onChange={onChange}>
+                {/* <label htmlFor="algorithm">algorithm:</label> */}
+                <select className="select-container" name="algorithm" onChange={onChange}>
                     <option value="A-star">A-star</option>
                     <option value="Daijkstra">Daijkstra</option>
                 </select>
