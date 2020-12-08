@@ -1,8 +1,10 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import daijkstra from '../algorithms/daijkstra';
+import aStar from '../algorithms/aStar';
 
 const StartButton = ({ startButtonClick, restartButtonClick, trigger }) => {
-    if(trigger){
+    if (trigger) {
         return (
             <div className="button-wrap">
                 <button
@@ -11,7 +13,7 @@ const StartButton = ({ startButtonClick, restartButtonClick, trigger }) => {
                 >PAUSE</button>
             </div>
         )
-    }else {
+    } else {
         return (
             <div className="button-wrap">
                 <button
@@ -31,8 +33,33 @@ const ResetButton = ({ onClick }) => {
     )
 }
 
+const AlgorithmDropBox = ({ onChange }) => {
+    return (
+        <div className="button-wrap">
+            <form>
+                <label htmlFor="algorithm">algorithm:</label>
+                <select name="algorithm" onChange={onChange}>
+                    <option value="A-star">A-star</option>
+                    <option value="Daijkstra">Daijkstra</option>
+                </select>
+            </form>
+        </div>
+    )
+}
+
 const Controller = () => {
+    const { boardCoordinate, startPoint, endPoint } = useSelector(({ boardCoordinate, startPoint, endPoint }) => ({
+        boardCoordinate: boardCoordinate,
+        startPoint: startPoint,
+        endPoint: endPoint
+    }));
     const dispatch = useDispatch();
+    const updateBox = useCallback(payload => dispatch({
+        type: 'controller/updateBox',
+        payload: payload
+    }), [dispatch])
+
+
     const updateBoxType = useCallback(payload => {
         dispatch({
             type: "gridBoard/updateBoxType",
@@ -45,22 +72,19 @@ const Controller = () => {
     const [elapsedTime, setElapsedTime] = useState("00:00:00")
     const [moveCount, setMoveCount] = useState(0);
 
-    const { visitedPoints, shortestPath } = useSelector(({ visitedPoints, shortestPath }) => ({
-        visitedPoints: visitedPoints,
-        shortestPath: shortestPath
-    }))
+    const [shortestPath, setShortestPath] = useState([]);
+    const [visitedPoints, setVisitedPoints] = useState([]);
 
     const savedCallback = useRef();
-
     function callback() {
-        if(visitedPoints[pathCount] != undefined){
+        if (visitedPoints[pathCount] != undefined) {
             updateBox({
                 point: visitedPoints[pathCount].index,
                 pointType: 'visited'
             })
             setMoveCount(moveCount + 1)
             setPathCount(pathCount + 1)
-        }else{ 
+        } else {
             updateBox({
                 point: shortestPath[shortestPathCount],
                 pointType: 'path'
@@ -72,25 +96,30 @@ const Controller = () => {
     useEffect(() => {
         savedCallback.current = callback
     });
-    
+
     useEffect(() => {
         function tick() {
             savedCallback.current();
         }
-        if(trigger) {
+        if (trigger) {
             let id = setInterval(tick, 3);
             return () => {
                 clearInterval(id)
             };
         }
-    },[trigger])
+    }, [trigger])
 
     const startButtonClick = () => {
-        if(shortestPath.length === 0){
-            updateShortestPath({
-                algorithm: 'Daijkstra'
-            })
-        }
+        const { visitedPoints: newVisitedPointsResult, shortestPath: newShortestPath }
+            = ((algorithmType) => {
+                if (algorithmType === 'Daijkstra') {
+                    return daijkstra(boardCoordinate, startPoint, endPoint)
+                } else if (algorithmType === 'A-star') {
+                    return aStar(boardCoordinate, startPoint, endPoint)
+                }
+            })(algorithmType)
+        setVisitedPoints(newVisitedPointsResult);
+        setShortestPath(newShortestPath);
         setTrigger(true)
     }
 
@@ -112,37 +141,21 @@ const Controller = () => {
         setElapsedTime("00:00:00")
         resetState()
     }
-
-    const {boardCoordinate, startPoint, endPoint} = useSelector( ({boardCoordinate, startPoint, endPoint }) => ({
-        boardCoordinate: boardCoordinate,
-        startPoint: startPoint,
-        endPoint: endPoint
-    }));
-
-    const updateBox = useCallback(payload => dispatch({
-        type: 'controller/updateBox',
-        payload: payload
-    }),[dispatch])
-
-    const updatePath = useCallback(payload => dispatch({
-        type: 'controller/updatePath',
-        payload: payload
-    }),[dispatch])
-
-    const updateShortestPath = useCallback(payload => dispatch({
-        type: 'controller/updateShortestPath',
-        payload: payload
-    }),[dispatch])
-
-
+    const [algorithmType, setAlgorithmType] = useState('A-star');
+    const algorithmTypeChange = (e) => {
+        setAlgorithmType(e.target.value)
+    }
 
     return (
         <section id="controller">
             <div className="right">
-                <StartButton 
-                startButtonClick={startButtonClick} 
-                restartButtonClick={restartButtonClick}
-                trigger={trigger}/>
+                <AlgorithmDropBox
+                    onChange={algorithmTypeChange}
+                ></AlgorithmDropBox>
+                <StartButton
+                    startButtonClick={startButtonClick}
+                    restartButtonClick={restartButtonClick}
+                    trigger={trigger} />
                 <ResetButton onClick={resetButtonClick} />
                 <div className="counter">
                     {/* <div className="counter-box">

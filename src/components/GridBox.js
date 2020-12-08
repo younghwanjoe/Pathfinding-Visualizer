@@ -60,7 +60,7 @@ const GridBox = (props) => {
     }
     const rightMouseClick = (e) => {
         e.preventDefault();
-        // dispatchStartPoint(boxPoint);
+        dispatchEndPoint(boxPoint);
         // setBoxClass("box start-point");
     }
 

@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 
-export const daijkstra = (boardCoordinate, startPoint, endPoint ) => {
+const daijkstra = (boardCoordinate, startPoint, endPoint ) => {
     const visitedPoints = [];
     const boardCoordinateCopy = cloneDeep(boardCoordinate);
     let orderCount = 0;
@@ -76,3 +76,5 @@ export const daijkstra = (boardCoordinate, startPoint, endPoint ) => {
         shortestPath: shortestPath
     }
 }
+
+export default daijkstra;
