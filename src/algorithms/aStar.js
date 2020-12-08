@@ -1,6 +1,19 @@
 import { cloneDeep } from 'lodash';
 import { forEachChild } from 'typescript';
 
+const manhattenDistance = (pointOne, pointTwo, boardCoordinateCopy) => {
+    let dx = Math.abs(boardCoordinateCopy[pointOne].x - boardCoordinateCopy[pointTwo].x);
+    let dy = Math.abs(boardCoordinateCopy[pointOne].y - boardCoordinateCopy[pointTwo].y);
+    return Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2))
+}
+
+const euclideanDistance = (pointOne, pointTwo, boardCoordinateCopy) => {
+    let dx = boardCoordinateCopy[pointOne].x - boardCoordinateCopy[pointTwo].x;
+    let dy = boardCoordinateCopy[pointOne].y - boardCoordinateCopy[pointTwo].y;
+    return Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2))
+}
+
+
 const aStar = (boardCoordinate, startPoint, endPoint) => {
     const boardCoordinateCopy = cloneDeep(boardCoordinate);
     const visitedPoints = [];
@@ -33,7 +46,8 @@ const aStar = (boardCoordinate, startPoint, endPoint) => {
                 const distanceFromStart = Math.abs(boardCoordinateCopy[startPoint].x - boardCoordinateCopy[point].x)
                     +
                     Math.abs(boardCoordinateCopy[startPoint].y - boardCoordinateCopy[point].y)
-                const heuristicDistance = 1* boardCoordinateCopy[point].x + 3 * boardCoordinateCopy[point].y;
+                // http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#S7
+                const heuristicDistance = manhattenDistance(endPoint,point,boardCoordinateCopy);
                 const fValue = distanceFromStart + heuristicDistance;
 
                 if (fValue < boardCoordinateCopy[point].fValue || boardCoordinateCopy[point].fValue === undefined) {
