@@ -1,77 +1,80 @@
-  :root {
-    --box-transition-delay: 0.2s;
-    --box-transition-function: linear;
-  }
-  .grid-board {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-  }
-  .row {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
+:root {
+  --box-transition-delay: 0.2s;
+  --box-transition-function: linear;
+}
+.grid-board {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+.row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.box {
+  padding: 1px;
+  display: flex;
+  width: 25px;
+  height: 25px;
+  border: 0.001em solid #57dbff;
+  -webkit-transition: background-color var(--box-transition-delay)
+    var(--box-transition-function);
+  -moz-transition: background-color var(--box-transition-delay)
+    var(--box-transition-function);
+  -o-transition: background-color var(--box-transition-delay)
+    var(--box-transition-function);
+  transition: background-color var(--box-transition-delay)
+    var(--box-transition-function);
+  border-right: none;
+  border-bottom: none;
+}
+.box:last-child {
+  border-right: 0.001em solid #57dbff;
+}
+.row:last-child {
   .box {
-    padding: 1px;
-    display: flex;
-    width: 25px;
-    height: 25px;
-    border: 0.001em solid #57dbff;
-    -webkit-transition: background-color var(--box-transition-delay) var(--box-transition-function);
-    -moz-transition: background-color var(--box-transition-delay)  var(--box-transition-function);
-    -o-transition: background-color var(--box-transition-delay)  var(--box-transition-function);
-    transition: background-color var(--box-transition-delay)  var(--box-transition-function);
-    border-right: none;
-    border-bottom: none;
+    border-bottom: 0.001em solid #57dbff;
   }
-  .box:last-child {
-    border-right: 0.001em solid #57dbff;
+  .wall {
+    border-bottom: 0.001em solid #ff80f2;
   }
-  .row:last-child {
-    .box{
-      border-bottom: 0.001em solid #57dbff;
-    }
-    .wall {
-      border-bottom: 0.001em solid #ff80f2;
-    }
-  }
-  .board-body{
-    width: 100%;
-  }
-  
-  .box.wall {
-    background: #ff80f2;
-    // background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(16,255,100,1) 100%);
-  }
-  .box.start-point {
-    background: rgb(4, 0, 255);
-  }
-  .box.end-point {
-    background: yellow;
-  }
-  .box.hover {
-    background-color: #57dbff;
-  }
-  .box.wall.hover {
-    background-color: #80B3FF;
-  }
-  .box.visited {
-    background: rgb(63,94,251);
-    animation-name: visitedAnimation;
-    animation-duration: 1s;
-    animation-timing-function: ease-out;
-    animation-delay: 0;
-    animation-direction: alternate;
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards;
-    animation-play-state: running;
-    
-  }
-  
+}
+.board-body {
+  width: 100%;
+}
+
+.box.wall {
+  background: #ff80f2;
+  // background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(16,255,100,1) 100%);
+}
+.box.start-point {
+  background: rgb(4, 0, 255);
+}
+.box.end-point {
+  background: yellow;
+}
+.box.hover {
+  background-color: #57dbff;
+}
+.box.wall.hover {
+  background-color: #80b3ff;
+}
+.box.visited {
+  background: rgb(63, 94, 251);
+  animation-name: visitedAnimation;
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
 @keyframes visitedAnimation {
   0% {
-    transform: scale(.3);
+    transform: scale(0.3);
     background-color: rgb(75, 202, 224);
     border-radius: 100%;
   }
@@ -82,14 +85,14 @@
 
   75% {
     transform: scale(1.2);
-    background-color: rgba(180, 238, 23, 0.75)
+    background-color: rgba(180, 238, 23, 0.75);
   }
 
   100% {
-    transform: scale(1.0);
+    transform: scale(1);
     background-color: rgb(40, 247, 219);
   }
 }
-  .box.path {
-    background: rgb(255, 55, 55);
-  }
+.box.path {
+  background: rgb(255, 55, 55);
+}

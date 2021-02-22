@@ -1,13 +1,12 @@
 import React from 'react';
 
 const TopBar = () => {
-    const mainDiv = 
+  const mainDiv = (
     <article id="topbar">
-        <section className="title">
-            Danny's Pathfinder
-        </section>
+      <section className="title">Danny's Pathfinder</section>
     </article>
-    return mainDiv
-}
+  );
+  return mainDiv;
+};
 
 export default TopBar;
