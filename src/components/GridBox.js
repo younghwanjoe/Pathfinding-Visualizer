@@ -3,10 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 
 const GridBox = (props) => {
   const { x, y, pointType, visited, wall } = props;
-  const { startPoint, endPoint } = useSelector(({ startPoint, endPoint }) => ({
-    startPoint: startPoint,
-    endPoint: endPoint,
-  }));
+  const { startPoint, endPoint, dragTarget } = useSelector(
+    ({ startPoint, endPoint, dragTarget }) => ({
+      startPoint,
+      endPoint,
+      dragTarget,
+    })
+  );
   const boxPoint = `${y}-${x}`;
   useEffect(() => {
     if (pointType === 'path') {
@@ -76,11 +79,6 @@ const GridBox = (props) => {
 
   const onClick = (e) => {
     e.preventDefault();
-    // if (boxPoint === startPoint) {
-    //     dispatchStartPoint(false);
-    // } else if (boxPoint === endPoint) {
-    //     dispatchEndPoint(false);
-    // }
     updateBox({
       point: boxPoint,
       pointType:
@@ -89,26 +87,52 @@ const GridBox = (props) => {
           : 'wall',
     });
   };
-  const onDragStart = (e) => {
-    e.preventDefault();
-    console.log(boxPoint);
-    if (boxPoint === startPoint) {
-      dispatchStartPoint(false);
-    } else if (boxPoint === endPoint) {
-      dispatchEndPoint(false);
-    }
+  const dispatchDragTarget = useCallback((payload) =>
+    dispatch({
+      type: 'updateDragTarget',
+      payload: payload,
+    })
+  );
 
-    const newClass = boxClass.includes('wall') ? 'box' : 'box wall';
-    setBoxClass(newClass);
+  const onDragEnter = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (boxPoint === startPoint) {
+      dispatchDragTarget('startPoint');
+    } else if (boxPoint === endPoint) {
+      dispatchDragTarget('endPoint');
+    } else if (dragTarget === null) {
+      onClick(e);
+    }
   };
 
+  const onDragOver = (e) => {
+    // The default action for dragOver is "Reset the current drag operation to none".
+    e.preventDefault();
+  };
+
+  const onDragEnd = (e) => {
+    e.preventDefault();
+    dispatchDragTarget(null);
+  };
+
+  const onDrop = (e) => {
+    if (dragTarget === 'startPoint') {
+      dispatchStartPoint(boxPoint);
+    } else if (dragTarget === 'endPoint') {
+      dispatchEndPoint(boxPoint);
+    }
+  };
   return (
     <div
       id={`column ${boxPoint}`}
       className={boxClass}
       onContextMenu={rightMouseClick}
       onClick={onClick}
-      onDragEnter={onClick}
+      onDragEnter={onDragEnter}
+      onDragOver={onDragOver}
+      onDragEnd={onDragEnd}
+      onDrop={onDrop}
       onMouseEnter={mouseEnter}
       onMouseLeave={mouseLeave}
       draggable={true}

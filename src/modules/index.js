@@ -31,6 +31,7 @@ const initialState = {
   algorithm: 'dijkstra',
   visitedPoints: [],
   shortestPath: [],
+  dragTarget: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -160,6 +161,14 @@ const reducer = (state = initialState, action) => {
         default:
           return state;
       }
+    }
+
+    case 'updateDragTarget': {
+      const payload = action.payload;
+      return {
+        ...state,
+        dragTarget: payload,
+      };
     }
     default:
       return state;
