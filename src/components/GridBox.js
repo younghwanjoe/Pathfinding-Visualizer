@@ -102,7 +102,13 @@ const GridBox = (props) => {
     } else if (boxPoint === endPoint) {
       dispatchDragTarget('endPoint');
     } else if (dragTarget === null) {
-      onClick(e);
+      updateBox({
+        point: boxPoint,
+        pointType:
+          boardCoordinate[boxPoint]['pointType'] === 'wall'
+            ? 'unvisited'
+            : 'wall',
+      });
     }
   };
 
