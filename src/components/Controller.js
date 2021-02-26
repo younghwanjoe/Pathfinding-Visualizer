@@ -4,23 +4,17 @@ import daijkstra from '../algorithms/daijkstra';
 import aStar from '../algorithms/aStar';
 
 const StartButton = ({ startButtonClick, restartButtonClick, trigger }) => {
-  if (trigger) {
-    return (
-      <div className="button-wrap">
-        <button className="button start" onClick={restartButtonClick}>
-          PAUSE
-        </button>
-      </div>
-    );
-  } else {
-    return (
-      <div className="button-wrap">
-        <button className="button start" onClick={startButtonClick}>
-          START
-        </button>
-      </div>
-    );
-  }
+  return (
+    <div className="button-wrap">
+      <button
+        className="button start"
+        onClick={startButtonClick}
+        disabled={trigger}
+      >
+        START
+      </button>
+    </div>
+  );
 };
 
 const ResetButton = ({ onClick }) => {
