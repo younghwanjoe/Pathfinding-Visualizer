@@ -46,13 +46,25 @@
 
 .box.wall {
   background: #ff80f2;
+  background-image: url(../image/wall.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
   // background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(16,255,100,1) 100%);
 }
 .box.start-point {
-  background: rgb(4, 0, 255);
+  background-color: orange;
+  background-image: url(../image/start.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
 }
 .box.end-point {
-  background: yellow;
+  background-color: springgreen;
+  background-image: url(../image/end.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
 }
 .box.hover {
   background-color: #57dbff;
@@ -94,5 +106,9 @@
   }
 }
 .box.path {
-  background: rgb(255, 55, 55);
+  background-color: yellow;
+  background-image: url(../image/path.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
 }
