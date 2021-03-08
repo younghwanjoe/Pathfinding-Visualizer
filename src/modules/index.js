@@ -34,27 +34,53 @@ const initialState = {
   dragTarget: null,
 };
 
+export const SET_START_POINT = 'gridBox/setStartPoint';
+export const SET_END_POINT = 'gridBox/setEndPoint';
+export const RESET_STATE = 'controllor/resetState';
+export const UPDATE_BOX = 'controller/updateBox';
+export const UPDATE_SHORTEST_PATH = 'controller/updateShortestPath';
+export const UPDATE_DRAG_TARGET = 'updateDragTarget';
+
+export function setStartPointAction({ payload }) {
+  return { type: SET_START_POINT, payload };
+}
+export function setEndPointAction({ payload }) {
+  return { type: SET_END_POINT, payload };
+}
+export function resetStateAction({ payload }) {
+  return { type: RESET_STATE, payload };
+}
+export function updateBoxAction({ payload }) {
+  return { type: UPDATE_BOX, payload };
+}
+export function updateShortestPathAction({ payload }) {
+  return { type: UPDATE_SHORTEST_PATH, payload };
+}
+export function updateDragTargetAction({ payload }) {
+  return { type: UPDATE_DRAG_TARGET, payload };
+}
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'gridBox/setStartPoint': {
+    case SET_START_POINT: {
       return {
         ...state,
         startPoint: action.payload,
       };
     }
 
-    case 'gridBox/setEndPoint': {
+    case SET_END_POINT: {
       return {
         ...state,
         endPoint: action.payload,
       };
     }
 
-    case 'controllor/resetState': {
+    case RESET_STATE: {
       return initialState;
     }
 
-    case 'controller/updateBox': {
+    case UPDATE_BOX: {
       const payload = action.payload;
       const keys = Object.keys(payload);
       const newBox = {
@@ -72,7 +98,7 @@ const reducer = (state = initialState, action) => {
       };
     }
 
-    case 'controller/updateShortestPath': {
+    case UPDATE_SHORTEST_PATH: {
       switch (action.payload.algorithm) {
         case 'Daijkstra': {
           const visitedPoints = [];
@@ -155,15 +181,13 @@ const reducer = (state = initialState, action) => {
             visitedPoints: visitedPoints,
             shortestPath: shortestPath,
           };
-          console.log('visited path', visitedPoints);
-          console.log('shortest path', shortestPath);
         }
         default:
           return state;
       }
     }
 
-    case 'updateDragTarget': {
+    case UPDATE_DRAG_TARGET: {
       const payload = action.payload;
       return {
         ...state,

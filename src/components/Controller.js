@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import daijkstra from '../algorithms/daijkstra';
 import aStar from '../algorithms/aStar';
+import { updateBoxAction, resetStateAction } from '../modules';
 
 const StartButton = ({ startButtonClick, restartButtonClick, trigger }) => {
   return (
@@ -56,22 +57,14 @@ const Controller = () => {
   const dispatch = useDispatch();
   const updateBox = useCallback(
     (payload) =>
-      dispatch({
-        type: 'controller/updateBox',
-        payload: payload,
-      }),
+      dispatch(
+        updateBoxAction({
+          payload: payload,
+        })
+      ),
     [dispatch]
   );
 
-  const updateBoxType = useCallback(
-    (payload) => {
-      dispatch({
-        type: 'gridBoard/updateBoxType',
-        payload: payload,
-      });
-    },
-    [dispatch]
-  );
   const [trigger, setTrigger] = useState(false);
   const [pathCount, setPathCount] = useState(0);
   const [shortestPathCount, setShortestPathCount] = useState(0);
@@ -83,7 +76,7 @@ const Controller = () => {
 
   const savedCallback = useRef();
   function callback() {
-    if (visitedPoints[pathCount] != undefined) {
+    if (visitedPoints[pathCount] !== undefined) {
       updateBox({
         point: visitedPoints[pathCount].index,
         pointType: 'visited',
@@ -136,9 +129,7 @@ const Controller = () => {
   };
 
   const resetState = useCallback(() => {
-    dispatch({
-      type: 'controllor/resetState',
-    });
+    dispatch(resetStateAction());
   }, [dispatch]);
 
   const resetButtonClick = () => {

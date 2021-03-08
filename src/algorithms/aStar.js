@@ -1,5 +1,4 @@
 import { cloneDeep } from 'lodash';
-import { forEachChild } from 'typescript';
 
 const manhattenDistance = (pointOne, pointTwo, boardCoordinateCopy) => {
   let dx = Math.abs(

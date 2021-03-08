@@ -3,12 +3,9 @@ import GridBox from './GridBox';
 import { useSelector } from 'react-redux';
 
 const GridBoard = () => {
-  const { countAxisX, countAxisY } = useSelector(
-    ({ countAxisX, countAxisY }) => ({
-      countAxisX: countAxisX,
-      countAxisY: countAxisY,
-    })
-  );
+  const { countAxisY } = useSelector(({ countAxisY }) => ({
+    countAxisY,
+  }));
 
   const { boardCoordinate } = useSelector(({ boardCoordinate }) => ({
     boardCoordinate: boardCoordinate,

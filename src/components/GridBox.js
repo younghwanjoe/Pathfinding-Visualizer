@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import {
+  updateBoxAction,
+  setStartPointAction,
+  setEndPointAction,
+  updateDragTargetAction,
+} from '../modules';
 
 const GridBox = (props) => {
   const { x, y, pointType, visited, wall } = props;
@@ -38,29 +44,32 @@ const GridBox = (props) => {
 
   const updateBox = useCallback(
     (payload) =>
-      dispatch({
-        type: 'controller/updateBox',
-        payload: payload,
-      }),
+      dispatch(
+        updateBoxAction({
+          payload: payload,
+        })
+      ),
     [dispatch]
   );
 
   const dispatchStartPoint = useCallback(
     (payload) => {
-      dispatch({
-        type: 'gridBox/setStartPoint',
-        payload: payload,
-      });
+      dispatch(
+        setStartPointAction({
+          payload: payload,
+        })
+      );
     },
     [dispatch]
   );
 
   const dispatchEndPoint = useCallback(
     (payload) => {
-      dispatch({
-        type: 'gridBox/setEndPoint',
-        payload: payload,
-      });
+      dispatch(
+        setEndPointAction({
+          payload: payload,
+        })
+      );
     },
     [dispatch]
   );
@@ -87,11 +96,15 @@ const GridBox = (props) => {
           : 'wall',
     });
   };
-  const dispatchDragTarget = useCallback((payload) =>
-    dispatch({
-      type: 'updateDragTarget',
-      payload: payload,
-    })
+  const dispatchDragTarget = useCallback(
+    (payload) => {
+      dispatch(
+        updateDragTargetAction({
+          payload: payload,
+        })
+      );
+    },
+    [dispatch]
   );
 
   const onDragEnter = (e) => {
