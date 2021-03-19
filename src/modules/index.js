@@ -1,32 +1,42 @@
 import cloneDeep from 'lodash/fp/cloneDeep';
 
-const countAxisX = 50;
-const countAxisY = 20;
+const COUNT_AXIS_X = 30;
+const COUNT_AXIS_Y = 20;
 
 // initializing boardCoordinate
-const boardCoordinate = {};
-[...Array(countAxisY).keys()].forEach((y) => {
-  [...Array(countAxisX).keys()].forEach((x) => {
-    boardCoordinate[`${y}-${x}`] = {
-      index: `${y}-${x}`,
-      x: x,
-      y: y,
-      pointType: 'unvisited',
-      wall: false,
-      visited: false,
-      cost: 1,
-      shortest: Infinity, //shortest cost from startPoint
-      prev: null, //previous vertex
-    };
-  });
-});
+const START_POINT = '5-5';
+const END_POINT = '10-10';
+
+const createBoardCoordinate = (countAxisX,countAxisY,startPoint,endPoint) => {
+  const board = {}
+  for(let y=0; y < countAxisY; y++){
+    for(let x=0; x < countAxisX; x++){
+      board[`${y}-${x}`] = {
+        index: `${y}-${x}`,
+        x: x,
+        y: y,
+        pointType: 'unvisited',
+        wall: false,
+        visited: false,
+        cost: 1,
+        shortest: Infinity, //shortest cost from startPoint
+        prev: null, //previous vertex
+      };
+    }
+  }
+  board[startPoint]['pointType'] = 'start'
+  board[endPoint]['pointType'] = 'end'
+  return board
+};
+
+const boardCoordinate = createBoardCoordinate(COUNT_AXIS_X,COUNT_AXIS_Y,START_POINT,END_POINT);
 
 const initialState = {
   boardCoordinate: boardCoordinate,
-  startPoint: '5-5',
-  endPoint: '10-10',
-  countAxisX: countAxisX,
-  countAxisY: countAxisY,
+  startPoint: START_POINT,
+  endPoint: END_POINT,
+  countAxisX: COUNT_AXIS_X,
+  countAxisY: COUNT_AXIS_Y,
   currentSearchPoints: [],
   algorithm: 'dijkstra',
   visitedPoints: [],
@@ -41,38 +51,68 @@ export const UPDATE_BOX = 'controller/updateBox';
 export const UPDATE_SHORTEST_PATH = 'controller/updateShortestPath';
 export const UPDATE_DRAG_TARGET = 'updateDragTarget';
 
-export function setStartPointAction({ payload }) {
-  return { type: SET_START_POINT, payload };
+export function setStartPointAction({ point }) {
+  return { type: SET_START_POINT, point };
 }
-export function setEndPointAction({ payload }) {
-  return { type: SET_END_POINT, payload };
+export function setEndPointAction({ point }) {
+  return { type: SET_END_POINT, point };
 }
-export function resetStateAction({ payload }) {
-  return { type: RESET_STATE, payload };
+export function resetStateAction() {
+  return { type: RESET_STATE };
 }
-export function updateBoxAction({ payload }) {
-  return { type: UPDATE_BOX, payload };
+export function updateBoxAction({ point, pointType }) {
+  return { type: UPDATE_BOX, point, pointType };
 }
-export function updateShortestPathAction({ payload }) {
-  return { type: UPDATE_SHORTEST_PATH, payload };
+export function updateShortestPathAction({ algorithm }) {
+  return { type: UPDATE_SHORTEST_PATH, algorithm };
 }
-export function updateDragTargetAction({ payload }) {
-  return { type: UPDATE_DRAG_TARGET, payload };
+export function updateDragTargetAction({ point }) {
+  return { type: UPDATE_DRAG_TARGET, point };
 }
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_START_POINT: {
+      const {point} = action;
+      const {startPoint} = state;
+      const prevBox = {
+        ...state['boardCoordinate'][startPoint],
+        pointType: 'unvisited'
+      };
+      const newBox = {
+        ...state['boardCoordinate'][point],
+        pointType: 'start'
+      };
       return {
         ...state,
-        startPoint: action.payload,
+        boardCoordinate: {
+          ...state['boardCoordinate'],
+          [startPoint]: prevBox,
+          [point]: newBox,
+        },
+        startPoint: point,
       };
     }
 
     case SET_END_POINT: {
+      const {point} = action;
+      const {endPoint} = {...state};
+      const prevBox = {
+        ...state['boardCoordinate'][endPoint],
+        pointType: 'unvisited'
+      };
+      const newBox = {
+        ...state['boardCoordinate'][point],
+        pointType: 'end'
+      };
       return {
         ...state,
-        endPoint: action.payload,
+        boardCoordinate: {
+          ...state['boardCoordinate'],
+          [endPoint]: prevBox,
+          [point]: newBox,
+        },
+        endPoint: point,
       };
     }
 
@@ -81,25 +121,22 @@ const reducer = (state = initialState, action) => {
     }
 
     case UPDATE_BOX: {
-      const payload = action.payload;
-      const keys = Object.keys(payload);
+      const { point, pointType } = action;
       const newBox = {
-        ...state['boardCoordinate'][action.payload.point],
+        ...state['boardCoordinate'][point],
+        pointType
       };
-      keys.forEach((key) => {
-        newBox[key] = payload[key];
-      });
       return {
         ...state,
         boardCoordinate: {
           ...state['boardCoordinate'],
-          [action.payload.point]: newBox,
+          [point]: newBox,
         },
       };
     }
 
     case UPDATE_SHORTEST_PATH: {
-      switch (action.payload.algorithm) {
+      switch (action.algorithm) {
         case 'Daijkstra': {
           const visitedPoints = [];
           const { startPoint, endPoint } = state;
@@ -188,10 +225,10 @@ const reducer = (state = initialState, action) => {
     }
 
     case UPDATE_DRAG_TARGET: {
-      const payload = action.payload;
+      const point = action.point;
       return {
         ...state,
-        dragTarget: payload,
+        dragTarget: point,
       };
     }
     default:

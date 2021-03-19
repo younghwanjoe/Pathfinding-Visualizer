@@ -8,7 +8,7 @@ import {
 } from '../modules';
 
 const GridBox = (props) => {
-  const { x, y, pointType, visited, wall } = props;
+  const { x, y, pointType } = props;
   const { startPoint, endPoint, dragTarget } = useSelector(
     ({ startPoint, endPoint, dragTarget }) => ({
       startPoint,
@@ -17,24 +17,33 @@ const GridBox = (props) => {
     })
   );
   const boxPoint = `${y}-${x}`;
-  useEffect(() => {
-    if (pointType === 'path') {
-      setBoxClass('box path');
-    } else if (pointType === 'unvisited') {
-      setBoxClass('box');
-    } else if (pointType === 'visited') {
-      setBoxClass('box visited');
-    } else if (pointType === 'wall') {
-      setBoxClass('box wall');
-    }
-
-    if (boxPoint === startPoint) {
-      setBoxClass('box start-point');
-    } else if (boxPoint === endPoint) {
-      setBoxClass('box end-point');
-    }
-  }, [startPoint, endPoint, boxPoint, pointType, wall, visited]);
   const [boxClass, setBoxClass] = useState('box');
+
+
+  useEffect(() => {
+    switch(pointType){
+      case 'path':
+        setBoxClass('box path');
+        break;
+      case 'unvisited':
+        setBoxClass('box')
+        break;
+      case 'visited':
+        setBoxClass('box visited')
+        break;
+      case 'wall':
+        setBoxClass('box wall');
+        break;
+      case 'start':
+        setBoxClass('box start-point');
+        break;
+      case 'end':
+        setBoxClass('box end-point');
+        break;
+      default:
+        return
+    }
+  },[pointType])
 
   const { boardCoordinate } = useSelector(({ boardCoordinate }) => ({
     boardCoordinate: boardCoordinate,
@@ -43,20 +52,21 @@ const GridBox = (props) => {
   const dispatch = useDispatch();
 
   const updateBox = useCallback(
-    (payload) =>
+    ({point,pointType}) =>
       dispatch(
         updateBoxAction({
-          payload: payload,
+          point,pointType
         })
       ),
     [dispatch]
   );
 
   const dispatchStartPoint = useCallback(
-    (payload) => {
+    ({point}) => {
       dispatch(
         setStartPointAction({
-          payload: payload,
+          point,
+          pointType: 'end'
         })
       );
     },
@@ -64,10 +74,10 @@ const GridBox = (props) => {
   );
 
   const dispatchEndPoint = useCallback(
-    (payload) => {
+    ({point}) => {
       dispatch(
         setEndPointAction({
-          payload: payload,
+          point
         })
       );
     },
@@ -82,27 +92,25 @@ const GridBox = (props) => {
   };
   const rightMouseClick = (e) => {
     e.preventDefault();
-    dispatchEndPoint(boxPoint);
-    // setBoxClass("box start-point");
+    dispatchEndPoint({point:boxPoint});
   };
 
   const onClick = (e) => {
     e.preventDefault();
-    updateBox({
-      point: boxPoint,
-      pointType:
-        boardCoordinate[boxPoint]['pointType'] === 'wall'
-          ? 'unvisited'
-          : 'wall',
-    });
+    if(pointType === 'wall' || pointType === 'unvisited'){
+      updateBox({
+        point: boxPoint,
+        pointType: pointType === 'wall' ? 'unvisited' : 'wall'
+      });
+    }
   };
   const dispatchDragTarget = useCallback(
-    (payload) => {
-      dispatch(
-        updateDragTargetAction({
-          payload: payload,
-        })
-      );
+     ({point})=> {
+        dispatch(
+          updateDragTargetAction({
+            point
+          })
+        );
     },
     [dispatch]
   );
@@ -111,9 +119,9 @@ const GridBox = (props) => {
     e.stopPropagation();
     e.preventDefault();
     if (boxPoint === startPoint) {
-      dispatchDragTarget('startPoint');
+      dispatchDragTarget({point: boxPoint});
     } else if (boxPoint === endPoint) {
-      dispatchDragTarget('endPoint');
+      dispatchDragTarget({point: boxPoint});
     } else if (dragTarget === null) {
       updateBox({
         point: boxPoint,
@@ -132,14 +140,14 @@ const GridBox = (props) => {
 
   const onDragEnd = (e) => {
     e.preventDefault();
-    dispatchDragTarget(null);
+    dispatchDragTarget({point:null});
   };
 
   const onDrop = (e) => {
-    if (dragTarget === 'startPoint') {
-      dispatchStartPoint(boxPoint);
-    } else if (dragTarget === 'endPoint') {
-      dispatchEndPoint(boxPoint);
+    if (dragTarget === startPoint) {
+      dispatchStartPoint({point:boxPoint});
+    } else if (dragTarget === endPoint) {
+      dispatchEndPoint({point:boxPoint});
     }
   };
   return (
@@ -150,8 +158,8 @@ const GridBox = (props) => {
       onClick={onClick}
       onDragEnter={onDragEnter}
       onDragOver={onDragOver}
-      onDragEnd={onDragEnd}
       onDrop={onDrop}
+      onDragEnd={onDragEnd}
       onMouseEnter={mouseEnter}
       onMouseLeave={mouseLeave}
       draggable={true}
