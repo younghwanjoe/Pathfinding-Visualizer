@@ -47,8 +47,8 @@ export function setStartPointAction({ payload }) {
 export function setEndPointAction({ payload }) {
   return { type: SET_END_POINT, payload };
 }
-export function resetStateAction({ payload }) {
-  return { type: RESET_STATE, payload };
+export function resetStateAction() {
+  return { type: RESET_STATE };
 }
 export function updateBoxAction({ payload }) {
   return { type: UPDATE_BOX, payload };
