@@ -7,7 +7,7 @@ const manhattenDistance = (pointOne, pointTwo, boardCoordinateCopy) => {
   let dy = Math.abs(
     boardCoordinateCopy[pointOne].y - boardCoordinateCopy[pointTwo].y
   );
-  return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+  return dx + dy;
 };
 
 const euclideanDistance = (pointOne, pointTwo, boardCoordinateCopy) => {
